@@ -39,6 +39,7 @@ async function run() {
 // -------------service connect---------------
 
 const serviceCollection =client.db('Hotelmanage').collection('services');
+const hotelbookingCollection =client.db('Hotelmanage').collection('booking');
 
 
 // -----------services---------------
@@ -54,7 +55,7 @@ app.get('/services/:id',async(req,res)=>{
  const id=req.params.id;
  const query ={_id:new ObjectId(id)} 
  const options={
-  projection:{Name:1,Price:1,roomservice_id:1,roomimg:1},
+  projection:{Name:1,Price:1,roomimg:1,roomsize:1,Description:1,Availability:1},
  }
  const result =await serviceCollection.findOne(query,options)
  res.send(result);
