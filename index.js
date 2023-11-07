@@ -1,7 +1,7 @@
 const express =require('express');
-require ('dotenv').config()
+// require ('dotenv').config()
 const cors = require ('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -13,15 +13,16 @@ app.use(cors({
   credentials:true,
 })
 )
+// app.use(cors());
+app.use(express.json());
 /*
  hotel
-PpxL2n6fPNYYxOfw 
+WoSO9muUeoe2eH12 
 */
 
 
 
-const uri = "mongodb+srv://hotel:PpxL2n6fPNYYxOfw@cluster0.ovpumir.mongodb.net/?retryWrites=true&w=majority";
-
+const uri = "mongodb+srv://hotel:WoSO9muUeoe2eH12@cluster0.ovpumir.mongodb.net/?retryWrites=true&w=majority";
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
@@ -40,20 +41,39 @@ async function run() {
 const serviceCollection =client.db('Hotelmanage').collection('services');
 
 
+// -----------services---------------
+
+
+app.get('/services',async(req,res)=>{
+  const cursor =serviceCollection.find();
+const result =await cursor.toArray();
+res.send(result) ; 
+})
+// -------services data specifig load-----------
+app.get('/services/:id',async(req,res)=>{
+ const id=req.params.id;
+ const query ={_id:new ObjectId(id)} 
+ const options={
+  projection:{Name:1,Price:1,roomservice_id:1,roomimg:1},
+ }
+ const result =await serviceCollection.findOne(query,options)
+ res.send(result);
+}
+)
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
-    // Ensures that the client will close when you finish/error
-    // await client.close();
+   
   }
 }
+run().catch(console.dir);
 
 // -----------------
-run().catch(console.dir);
 app.get('/',(req,res) =>{
   res.send('Hotel  is runing' )
 })
 app.listen(port,()=>{
-  console.log(`Hotel  server is running  on port${port}n`)
+  console.log(`Hotel  server is running  on port${port}`)
 })
