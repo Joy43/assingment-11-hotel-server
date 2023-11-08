@@ -84,7 +84,7 @@ app.post('/bookings',async(req,res)=>{
 
 });
 
-// *********Dealete Bookin**************
+// ********* Dealete Bookin **************
 // ----delete-----
 app.delete('/bookings/:id',async(req,res)=>{
   const id =req.params.id;
