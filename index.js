@@ -36,10 +36,11 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
-// -------------service connect---------------
+// ------------- connect md---------------
 
 const serviceCollection =client.db('Hotelmanage').collection('services');
-const hotelbookingCollection =client.db('Hotelmanage').collection('booking');
+const hotelbookingCollection =client.db('Hotelmanage').collection('bookings');
+
 
 
 // -----------services---------------
@@ -62,6 +63,37 @@ app.get('/services/:id',async(req,res)=>{
 }
 )
 
+// ******************* Booking ***********************
+
+app.get('/bookings',async(req,res)=>{
+  console.log(req.query);
+  let query={};
+  if(req.query?.email){
+query={query:req.query.email}
+  }
+  const result=await hotelbookingCollection.find().toArray();
+  res.send(result)
+})
+
+
+app.post('/bookings',async(req,res)=>{
+  const booking=req.body;
+  console.log(booking)
+  const result =await hotelbookingCollection.insertOne(booking);
+  res.send(result)
+
+});
+
+// *********Dealete Bookin**************
+// ----delete-----
+app.delete('/bookings/:id',async(req,res)=>{
+  const id =req.params.id;
+  const query={_id:new ObjectId(id)}
+  const result=await hotelbookingCollection.deleteOne(query);
+  res.send(result);
+ 
+ })
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -71,7 +103,7 @@ app.get('/services/:id',async(req,res)=>{
 }
 run().catch(console.dir);
 
-// -----------------
+// -----------------cheack connect--------
 app.get('/',(req,res) =>{
   res.send('Hotel  is runing' )
 })
